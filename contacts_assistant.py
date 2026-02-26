@@ -25,8 +25,8 @@ def input_date_error(func):
     def inner(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except ValueError as e:
-            return e
+        except ValueError:
+            return "Give me name and birthday(MM.DD.YYYY) please."
     return inner
 
 def parse_input(user_input):
