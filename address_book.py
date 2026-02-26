@@ -22,7 +22,7 @@ class Birthday(Field):
 
 class Name(Field):
     def __init__(self, value):
-        if(value == None or len(value) == 0):
+        if(value is None or len(value) == 0):
              raise ValueError('Name cannot be null or empty')
         self.value = value
 	
@@ -77,7 +77,7 @@ class Record:
         return "; ".join(p.value for p in self.phones)
 
     def __str__(self):
-        return f"Contact name: {self.name.value}, {'' if self.birthday == None else 'Birthday: ' + self.birthday.__str__() + ', '}Phones: {self.get_phones()}"
+        return f"Contact name: {self.name.value}, {'' if self.birthday is None else 'Birthday: ' + self.birthday.__str__() + ', '}Phones: {self.get_phones()}"
 
 class AddressBook(UserDict):
     def add_record(self, record: Record):
@@ -106,7 +106,7 @@ class AddressBook(UserDict):
         def get_working_day(date): return date + td(days=7-date.weekday()) if(date.weekday() in [5,6]) else date
 
         for record in self.data.values():
-            if record.birthday == None:
+            if record.birthday is None:
                 continue
             congrats_date = get_congrats_date_from_record(record)
             days_diff = congrats_date - current_date
