@@ -1,7 +1,6 @@
 from typing import Final
 from address_book import AddressBook, Record
 
-CONTACTS_FILE_NAME: Final = 'contacts.txt'
 NOT_FOUND:Final[str] = "Contact {name} not found."
 ADDED:Final[str] = "Contact {name} has been added."
 UPDATED:Final[str] = "Contact {name} has been updated."
@@ -80,7 +79,7 @@ def show_birthday(args, book: AddressBook):
 @input_error
 def print_phone(args, book: AddressBook):
     name, *_ = args
-    return f"{name}: {book[name]}"
+    return f"{name}: {book[name].get_phones() }"
 
 def upcoming_birthdays(book: AddressBook):
     message = "Birthdays for next week: \n"

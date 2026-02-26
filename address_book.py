@@ -11,17 +11,10 @@ class Field:
     def __str__(self):
         return str(self.value)
     
-
     
 class Birthday(Field):
-
     def __init__(self, value):
         self.value = dt.strptime(value, DATE_FORMAT)
-        
-    @staticmethod
-    def __check_date_format__(value):
-        if type(value) != str:
-            raise ValueError("Invalid date format. Use DD.MM.YYYY")
         
     def __str__(self):
         return dt.strftime(self.value, DATE_FORMAT)
@@ -44,15 +37,6 @@ class Phone(Field):
         if(len(phone) < 10 or not phone.isdigit()):
             raise ValueError('Phone number must have at least 10 digits')
 
-    @property
-    def phone(self) -> str:
-        return self.value
-    
-    @phone.setter
-    def phone(self, phone):
-        self.__check_len__(phone)
-        self.value = phone
-
     def __str__(self):
         return f"{self.value}"
           
@@ -61,11 +45,14 @@ class Record:
     def __init__(self, name, birthday = None):
         self.name = Name(name)
         self.phones = []
-        self.birthday = birthday
+        self.__birthday = birthday
 
+    @property #readonly, usually people do not born twice
+    def birthday(self):
+        return self.__birthday
 
     def add_birthday(self, date: str):
-        self.birthday = Birthday(date)
+        self.__birthday = Birthday(date)
 
     def find_phone(self, phone):
         phones = list(filter(lambda ph: ph == phone, self.phones))
@@ -86,8 +73,11 @@ class Record:
         if(existing_phone != None):
             existing_phone.set(new_phone)
 
+    def get_phones(self):
+        return "; ".join(p.value for p in self.phones)
+
     def __str__(self):
-        return f"Contact name: {self.name.value}, {'' if self.birthday == None else 'Birthday:' + self.birthday.__str__()+', '}Phones: {'; '.join(p.value for p in self.phones)}"
+        return f"Contact name: {self.name.value}, {'' if self.birthday == None else 'Birthday: ' + self.birthday.__str__() + ', '}Phones: {self.get_phones()}"
 
 class AddressBook(UserDict):
     def add_record(self, record: Record):
@@ -97,7 +87,7 @@ class AddressBook(UserDict):
         return self.data.get(name.lower())
     
     def delete(self, name):
-        self.data.pop(name)
+        self.data.pop(name.lower())
 
     def __str__(self):
         records_l = ['Address book:']
