@@ -30,15 +30,26 @@ class Name(Field):
 class Phone(Field):
     def __init__(self, value):
         self.__check_len__(value)
-        self.value = value
+        self.__value = value
 
     @staticmethod
     def __check_len__(phone):
         if(len(phone) < 10 or not phone.isdigit()):
             raise ValueError('Phone number must have at least 10 digits')
+        
+    @property
+    def value(self):
+        return self.__value
+    
+    @value.setter
+    def value(self, value):
+        Phone.__check_len__(value)
+        self.__value = value
+        
+    
 
     def __str__(self):
-        return f"{self.value}"
+        return f"{self.__value}"
           
 
 class Record:
@@ -55,7 +66,7 @@ class Record:
         self.__birthday = Birthday(date)
 
     def find_phone(self, phone):
-        phones = list(filter(lambda ph: ph == phone, self.phones))
+        phones = list(filter(lambda ph: ph.value == phone, self.phones))
         if(len(phones)>0): return phones[0]
         else: return None
 
@@ -71,7 +82,8 @@ class Record:
     def edit_phone(self, old_phone, new_phone):
         existing_phone = self.find_phone(old_phone)
         if(existing_phone != None):
-            existing_phone.set(new_phone)
+            existing_phone.value = new_phone
+        else: return f"Phone {old_phone} not found"    
 
     def get_phones(self):
         return "; ".join(p.value for p in self.phones)

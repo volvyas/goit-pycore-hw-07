@@ -48,13 +48,13 @@ def add_contact(args, book: AddressBook):
 
 @input_error
 def change_contact(args,  book: AddressBook):
-    name, phone = args
+    name, phone, new_phone = args
     record = book.find(name)
     message = UPDATED.format(name = name)
     if record is None:
         return NOT_FOUND.format(name = record.name)
     if phone:
-        record.add_phone(phone)
+        record.edit_phone(phone, new_phone)
 
     return message
 
