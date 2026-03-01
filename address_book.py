@@ -1,6 +1,7 @@
 from collections import UserDict
 from datetime import datetime as dt, timedelta as td, date as d
 from typing import Final
+from re import match 
 
 DATE_FORMAT: Final =  '%d.%m.%Y'
 
@@ -13,11 +14,21 @@ class Field:
     
     
 class Birthday(Field):
+
+    def __chk_date(date_s):
+        if not match(r"[0-3]\d\.[0-1]\d\.\d{4}", date_s):
+            raise ValueError("Date format is DD.MM.YYYY")
+
     def __init__(self, value):
-        self.value = dt.strptime(value, DATE_FORMAT)
+        Birthday.__chk_date(value)
+        self.__value = dt.strptime(value, DATE_FORMAT)
+
+    @property
+    def value(self):
+        return self.__value
         
     def __str__(self):
-        return dt.strftime(self.value, DATE_FORMAT)
+        return dt.strftime(self.__value, DATE_FORMAT)
 
 
 class Name(Field):
@@ -45,8 +56,6 @@ class Phone(Field):
     def value(self, value):
         Phone.__check_len__(value)
         self.__value = value
-        
-    
 
     def __str__(self):
         return f"{self.__value}"

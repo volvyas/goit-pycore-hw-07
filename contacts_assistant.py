@@ -23,9 +23,11 @@ def input_error(func):
 def input_date_error(func):
     def inner(*args, **kwargs):
         try:
+            if(len(args[0]) < 2):
+                return "Give me name and date please"
             return func(*args, **kwargs)
-        except ValueError:
-            return "Give me name and birthday(MM.DD.YYYY) please."
+        except ValueError as e:
+            return e
     return inner
 
 def parse_input(user_input):
@@ -52,7 +54,7 @@ def change_contact(args,  book: AddressBook):
     record = book.find(name)
     message = UPDATED.format(name = name)
     if record is None:
-        return NOT_FOUND.format(name = record.name)
+        return NOT_FOUND.format(name = name)
     if phone:
         record.edit_phone(phone, new_phone)
 
@@ -66,7 +68,7 @@ def add_birthday(args, book: AddressBook):
     if record:
         record.add_birthday(birthday)
         return message
-    else: return NOT_FOUND
+    else: return NOT_FOUND.format(name = name)
 
 @input_error
 def show_birthday(args, book: AddressBook):
@@ -74,7 +76,7 @@ def show_birthday(args, book: AddressBook):
     record = book.find(name)
     if record:
         return record.birthday
-    else: return NOT_FOUND
+    else: return NOT_FOUND.format(name = name)
 
 @input_error
 def print_phone(args, book: AddressBook):
